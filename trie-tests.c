@@ -39,7 +39,7 @@ void assert_trie_does_not_contain_key(CuTest* test, trie_t* trie, const char* ke
     CuAssertFalse(test, contains);
 }
 
-void test_no_keys(CuTest* test) {
+void test_contains_with_no_keys(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
     assert_trie_does_not_contain_key(test, trie, "hello");
@@ -47,7 +47,7 @@ void test_no_keys(CuTest* test) {
     trie_destroy_checked(test, trie);
 }
 
-void test_single_char_key(CuTest* test) {
+void test_contains_with_single_char_key(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
     const char* key = "a";
@@ -58,7 +58,7 @@ void test_single_char_key(CuTest* test) {
     trie_destroy_checked(test, trie);
 }
 
-void test_two_chars_key(CuTest* test) {
+void test_contains_with_two_chars_key(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
     const char* key = "hi";
@@ -69,7 +69,7 @@ void test_two_chars_key(CuTest* test) {
     trie_destroy_checked(test, trie);
 }
 
-void test_two_overlapping_keys(CuTest* test) {
+void test_contains_with_two_overlapping_keys(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
     const char* key_one = "bone";
@@ -84,11 +84,10 @@ void test_two_overlapping_keys(CuTest* test) {
     trie_destroy_checked(test, trie);
 }
 
-void test_full_key_matched(CuTest* test) {
+void test_contains_matches_full_key(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
-    const char* a = "a";
-    trie_add_key_checked(test, trie, a);
+    trie_add_key_checked(test, trie, "a");
 
     assert_trie_does_not_contain_key(test, trie, "an");
 
