@@ -3,5 +3,5 @@
 ALL_TESTS_FILE=trie-all-tests.c
 
 ./make-tests.sh > $ALL_TESTS_FILE
-gcc -o test CuTest.c trie.c trie-tests.c $ALL_TESTS_FILE
+gcc -std=c99 -pedantic -o test CuTest.c trie.c trie-tests.c $ALL_TESTS_FILE
 ./test
