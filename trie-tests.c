@@ -68,3 +68,18 @@ void test_two_chars_key(CuTest* test) {
 
     trie_destroy_checked(test, trie);
 }
+
+void test_two_overlapping_keys(CuTest* test) {
+    trie_t* trie = trie_create_checked(test);
+
+    const char* key_one = "bone";
+    trie_add_key_checked(test, trie, key_one);
+
+    const char* key_two = "body";
+    trie_add_key_checked(test, trie, key_two);
+
+    assert_trie_contains_key(test, trie, key_one);
+    assert_trie_contains_key(test, trie, key_two);
+
+    trie_destroy_checked(test, trie);
+}
