@@ -39,7 +39,7 @@ void assert_trie_does_not_contain_key(CuTest* test, trie_t* trie, const char* ke
     CuAssertFalse(test, contains);
 }
 
-void test_contains_with_no_keys(CuTest* test) {
+void test_contains_empty(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
     assert_trie_does_not_contain_key(test, trie, "hello");
@@ -90,6 +90,27 @@ void test_contains_matches_full_key(CuTest* test) {
     trie_add_key_checked(test, trie, "a");
 
     assert_trie_does_not_contain_key(test, trie, "an");
+
+    trie_destroy_checked(test, trie);
+}
+
+void test_contains_does_not_match_prefixes(CuTest* test) {
+    trie_t* trie = trie_create_checked(test);
+
+    trie_add_key_checked(test, trie, "an");
+
+    assert_trie_does_not_contain_key(test, trie, "a");
+
+    trie_destroy_checked(test, trie);
+}
+
+void test_contains_matches_prefix_words(CuTest* test) {
+    trie_t* trie = trie_create_checked(test);
+
+    trie_add_key_checked(test, trie, "an");
+    trie_add_key_checked(test, trie, "a");
+
+    assert_trie_contains_key(test, trie, "a");
 
     trie_destroy_checked(test, trie);
 }

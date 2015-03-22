@@ -12,6 +12,7 @@ typedef struct {
 
 struct _trie_node_t {
     char ch;
+    const char* word;
     _trie_node_list_t children;
     _trie_node_t* next;
 };
@@ -56,6 +57,7 @@ _trie_node_t* _create_node(char ch) {
     }
 
     node->ch = ch;
+    node->word = NULL;
     node->next = NULL;
 
     return node;
@@ -91,6 +93,10 @@ trie_error_t trie_add_key(trie_t* trie, const char* key) {
             _insert_node(current_node_list, node_with_char);
         }
 
+        if (i == strlen(key)-1) {
+            node_with_char->word = key;
+        }
+
         current_node_list = &(node_with_char->children);
     }
 
@@ -107,6 +113,12 @@ trie_error_t trie_contains(trie_t* trie, const char* key, bool* contains) {
         if (node_with_char == NULL) {
             *contains = false;
             break;
+        }
+
+        if (i == strlen(key)-1) {
+            if (node_with_char->word == NULL) {
+                *contains = false;
+            }
         }
 
         current_node_list = &(node_with_char->children);
