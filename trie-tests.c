@@ -83,3 +83,14 @@ void test_two_overlapping_keys(CuTest* test) {
 
     trie_destroy_checked(test, trie);
 }
+
+void test_full_key_matched(CuTest* test) {
+    trie_t* trie = trie_create_checked(test);
+
+    const char* a = "a";
+    trie_add_key_checked(test, trie, a);
+
+    assert_trie_does_not_contain_key(test, trie, "an");
+
+    trie_destroy_checked(test, trie);
+}

@@ -98,27 +98,18 @@ trie_error_t trie_add_key(trie_t* trie, const char* key) {
 }
 
 trie_error_t trie_contains(trie_t* trie, const char* key, bool* contains) {
-    *contains = false;
-    _trie_node_list_t current = trie->roots;
+    *contains = true;
+    _trie_node_list_t* current_node_list = &(trie->roots);
 
     for (size_t i = 0U; i < strlen(key); i++) {
-        _trie_node_t* current_node = current.head_node;
-
-        bool found = false;
-        while (current_node != NULL) {
-            char current_char = current_node->ch;
-
-            if (current_node->ch == key[i]) {
-                current = current_node->children;
-                found = true;
-                break;
-            }
-            current_node = current_node->next;
+        _trie_node_t* node_with_char =
+            _get_node_with_char(current_node_list, key[i]);
+        if (node_with_char == NULL) {
+            *contains = false;
+            break;
         }
 
-        if (current.head_node == NULL && found == true) {
-            *contains = true;
-        }
+        current_node_list = &(node_with_char->children);
     }
 
     return TRIE_SUCCESS;
