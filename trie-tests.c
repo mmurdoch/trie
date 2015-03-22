@@ -11,6 +11,12 @@ trie_t* trie_create_checked(CuTest* test) {
     return trie;
 }
 
+void trie_add_key_checked(CuTest* test, trie_t* trie, const char* key) {
+    if (trie_add_key(trie, key) != TRIE_SUCCESS) {
+        CuFail(test, "trie_add_key failed");
+    }
+}
+
 void trie_destroy_checked(CuTest* test, trie_t* trie) {
     if (trie_destroy(trie) != TRIE_SUCCESS) {
         CuFail(test, "trie_destroy failed");
@@ -22,7 +28,7 @@ void assert_trie_contains_key(CuTest* test, trie_t* trie, const char* key) {
     if (trie_contains(trie, key, &contains) != TRIE_SUCCESS) {
         CuFail(test, "trie_contains failed");
     }
-    CuAssertTrue(test, contains);
+    CuAssert(test, key, contains);
 }
 
 void assert_trie_does_not_contain_key(CuTest* test, trie_t* trie, const char* key) {
@@ -45,9 +51,7 @@ void test_single_char_key(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
     const char* key = "a";
-    if (trie_add_key(trie, key) != TRIE_SUCCESS) {
-        CuFail(test, "trie_add_key failed");
-    }
+    trie_add_key_checked(test, trie, key);
 
     assert_trie_contains_key(test, trie, key);
 
@@ -58,9 +62,7 @@ void test_two_chars_key(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
     const char* key = "hi";
-    if (trie_add_key(trie, key) != TRIE_SUCCESS) {
-        CuFail(test, "trie_add_key failed");
-    }
+    trie_add_key_checked(test, trie, key);
 
     assert_trie_contains_key(test, trie, key);
 
