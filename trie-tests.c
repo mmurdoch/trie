@@ -11,9 +11,16 @@ trie_t* trie_create_checked(CuTest* test) {
     return trie;
 }
 
-void trie_add_key_checked(CuTest* test, trie_t* trie, const char* key) {
-    if (trie_add_key(trie, key) != TRIE_SUCCESS) {
+void trie_add_word_checked(CuTest* test, trie_t* trie, const char* word) {
+    if (trie_add_word(trie, word) != TRIE_SUCCESS) {
         CuFail(test, "trie_add_key failed");
+    }
+}
+
+void trie_contains_word_checked(CuTest* test, trie_t* trie, const char* word,
+    bool* contains) {
+    if (trie_contains_word(trie, word, contains) != TRIE_SUCCESS) {
+        CuFail(test, "trie_contains failed");
     }
 }
 
@@ -23,73 +30,70 @@ void trie_destroy_checked(CuTest* test, trie_t* trie) {
     }
 }
 
-void assert_trie_contains_key(CuTest* test, trie_t* trie, const char* key) {
+void assert_trie_contains_word(CuTest* test, trie_t* trie, const char* word) {
     bool contains;
-    if (trie_contains(trie, key, &contains) != TRIE_SUCCESS) {
-        CuFail(test, "trie_contains failed");
-    }
-    CuAssert(test, key, contains);
+    trie_contains_word_checked(test, trie, word, &contains);
+    CuAssert(test, word, contains);
 }
 
-void assert_trie_does_not_contain_key(CuTest* test, trie_t* trie, const char* key) {
+void assert_trie_does_not_contain_word(CuTest* test, trie_t* trie,
+    const char* word) {
     bool contains;
-    if (trie_contains(trie, key, &contains) != TRIE_SUCCESS) {
-        CuFail(test, "trie_contains failed");
-    }
+    trie_contains_word_checked(test, trie, word, &contains);
     CuAssertFalse(test, contains);
 }
 
 void test_contains_empty(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
-    assert_trie_does_not_contain_key(test, trie, "hello");
+    assert_trie_does_not_contain_word(test, trie, "hello");
 
     trie_destroy_checked(test, trie);
 }
 
-void test_contains_with_single_char_key(CuTest* test) {
+void test_contains_with_single_char_word(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
-    const char* key = "a";
-    trie_add_key_checked(test, trie, key);
+    const char* a = "a";
+    trie_add_word_checked(test, trie, a);
 
-    assert_trie_contains_key(test, trie, key);
+    assert_trie_contains_word(test, trie, a);
 
     trie_destroy_checked(test, trie);
 }
 
-void test_contains_with_two_chars_key(CuTest* test) {
+void test_contains_with_two_chars_word(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
-    const char* key = "hi";
-    trie_add_key_checked(test, trie, key);
+    const char* hi = "hi";
+    trie_add_word_checked(test, trie, hi);
 
-    assert_trie_contains_key(test, trie, key);
+    assert_trie_contains_word(test, trie, hi);
 
     trie_destroy_checked(test, trie);
 }
 
-void test_contains_with_two_overlapping_keys(CuTest* test) {
+void test_contains_with_two_overlapping_words(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
-    const char* key_one = "bone";
-    trie_add_key_checked(test, trie, key_one);
+    const char* bone = "bone";
+    trie_add_word_checked(test, trie, bone);
 
-    const char* key_two = "body";
-    trie_add_key_checked(test, trie, key_two);
+    const char* body = "body";
+    trie_add_word_checked(test, trie, body);
 
-    assert_trie_contains_key(test, trie, key_one);
-    assert_trie_contains_key(test, trie, key_two);
+    assert_trie_contains_word(test, trie, bone);
+    assert_trie_contains_word(test, trie, body);
 
     trie_destroy_checked(test, trie);
 }
 
-void test_contains_matches_full_key(CuTest* test) {
+void test_contains_matches_full_word(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
-    trie_add_key_checked(test, trie, "a");
+    trie_add_word_checked(test, trie, "a");
 
-    assert_trie_does_not_contain_key(test, trie, "an");
+    assert_trie_does_not_contain_word(test, trie, "an");
 
     trie_destroy_checked(test, trie);
 }
@@ -97,9 +101,9 @@ void test_contains_matches_full_key(CuTest* test) {
 void test_contains_does_not_match_prefixes(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
-    trie_add_key_checked(test, trie, "an");
+    trie_add_word_checked(test, trie, "an");
 
-    assert_trie_does_not_contain_key(test, trie, "a");
+    assert_trie_does_not_contain_word(test, trie, "a");
 
     trie_destroy_checked(test, trie);
 }
@@ -107,10 +111,10 @@ void test_contains_does_not_match_prefixes(CuTest* test) {
 void test_contains_matches_prefix_words(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
-    trie_add_key_checked(test, trie, "an");
-    trie_add_key_checked(test, trie, "a");
+    trie_add_word_checked(test, trie, "an");
+    trie_add_word_checked(test, trie, "a");
 
-    assert_trie_contains_key(test, trie, "a");
+    assert_trie_contains_word(test, trie, "a");
 
     trie_destroy_checked(test, trie);
 }
@@ -118,15 +122,15 @@ void test_contains_matches_prefix_words(CuTest* test) {
 void test_get_no_prefix_matches(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
-    size_t matches_length = 1U;
-    const char* matches[matches_length];
-    size_t match_count;
-    if (trie_get_prefix_matches(
-        trie, "a", matches, matches_length, &match_count) != TRIE_SUCCESS) {
-        CuFail(test, "trie_get_prefix_matches failed");
+    size_t words_length = 1U;
+    const char* words[words_length];
+    size_t word_count;
+    if (trie_get_words_matching_prefix(
+        trie, "a", words, words_length, &word_count) != TRIE_SUCCESS) {
+        CuFail(test, "trie_get_words_matching_prefix failed");
     }
 
-    CuAssertIntEquals(test, 0U, match_count);
+    CuAssertIntEquals(test, 0U, word_count);
 
     trie_destroy_checked(test, trie);
 }
@@ -134,21 +138,21 @@ void test_get_no_prefix_matches(CuTest* test) {
 void test_get_prefix_matches(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
-    trie_add_key_checked(test, trie, "aardvark");
-    trie_add_key_checked(test, trie, "wolf");
-    trie_add_key_checked(test, trie, "aardwolf");
+    trie_add_word_checked(test, trie, "aardvark");
+    trie_add_word_checked(test, trie, "wolf");
+    trie_add_word_checked(test, trie, "aardwolf");
 
-    size_t matches_length = 2U;
-    const char* matches[matches_length];
-    size_t match_count;
-    if (trie_get_prefix_matches(
-        trie, "aard", matches, matches_length, &match_count) != TRIE_SUCCESS) {
-        CuFail(test, "trie_get_prefix_matches failed");
+    size_t words_length = 2U;
+    const char* words[words_length];
+    size_t word_count;
+    if (trie_get_words_matching_prefix(
+        trie, "aard", words, words_length, &word_count) != TRIE_SUCCESS) {
+        CuFail(test, "trie_get_words_matching_prefix failed");
     }
 
-    CuAssertIntEquals(test, 2U, match_count);
-    CuAssertStrEquals(test, "aardvark", matches[0]);
-    CuAssertStrEquals(test, "aardwolf", matches[1]);
+    CuAssertIntEquals(test, 2U, word_count);
+    CuAssertStrEquals(test, "aardvark", words[0]);
+    CuAssertStrEquals(test, "aardwolf", words[1]);
 
     trie_destroy_checked(test, trie);
 }

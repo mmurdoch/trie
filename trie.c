@@ -33,8 +33,8 @@ trie_error_t trie_create(trie_t** trie) {
     return TRIE_SUCCESS;
 }
 
-// Returns the node within node_list which contains key_char or NULL if no node
-// exists in the node list for the given key_char
+// Returns the node within node_list which contains ch or NULL if no node
+// exists in the node list for the given ch
 _trie_node_t* _get_node_with_char(_trie_node_list_t* node_list, char ch) {
     _trie_node_t* current_node = node_list->head_node;
     while (current_node != NULL) {
@@ -77,15 +77,15 @@ void _insert_node(_trie_node_list_t* node_list, _trie_node_t* node) {
     }
 }
 
-trie_error_t trie_add_key(trie_t* trie, const char* key) {
+trie_error_t trie_add_word(trie_t* trie, const char* word) {
     _trie_node_list_t* current_node_list = &(trie->roots);
 
-    for (size_t i = 0U; i < strlen(key); i++) {
-        char current_key_char = key[i];
+    for (size_t i = 0U; i < strlen(word); i++) {
+        char current_char = word[i];
         _trie_node_t* node_with_char =
-            _get_node_with_char(current_node_list, current_key_char);
+            _get_node_with_char(current_node_list, current_char);
         if (node_with_char == NULL) {
-            node_with_char = _create_node(current_key_char);
+            node_with_char = _create_node(current_char);
             if (node_with_char == NULL) {
                 return TRIE_FAIL;
             }
@@ -93,8 +93,8 @@ trie_error_t trie_add_key(trie_t* trie, const char* key) {
             _insert_node(current_node_list, node_with_char);
         }
 
-        if (i == strlen(key)-1) {
-            node_with_char->word = key;
+        if (i == strlen(word)-1) {
+            node_with_char->word = word;
         }
 
         current_node_list = &(node_with_char->children);
@@ -103,19 +103,20 @@ trie_error_t trie_add_key(trie_t* trie, const char* key) {
     return TRIE_SUCCESS;
 }
 
-trie_error_t trie_contains(trie_t* trie, const char* key, bool* contains) {
+trie_error_t trie_contains_word(trie_t* trie, const char* word,
+    bool* contains) {
     *contains = true;
     _trie_node_list_t* current_node_list = &(trie->roots);
 
-    for (size_t i = 0U; i < strlen(key); i++) {
+    for (size_t i = 0U; i < strlen(word); i++) {
         _trie_node_t* node_with_char =
-            _get_node_with_char(current_node_list, key[i]);
+            _get_node_with_char(current_node_list, word[i]);
         if (node_with_char == NULL) {
             *contains = false;
             break;
         }
 
-        if (i == strlen(key)-1) {
+        if (i == strlen(word)-1) {
             if (node_with_char->word == NULL) {
                 *contains = false;
             }
@@ -128,48 +129,41 @@ trie_error_t trie_contains(trie_t* trie, const char* key, bool* contains) {
 }
 
 size_t _get_descendant_words(_trie_node_t* from_node,
-    const char** matches, size_t matches_length) {
-    size_t match_count = 0U;
+    const char** words, size_t words_length) {
+    size_t word_count = 0U;
 
     if (from_node->word != NULL) {
-        matches[match_count] = from_node->word;
-        match_count++;
+        words[word_count] = from_node->word;
+        word_count++;
     }
 
     _trie_node_t* current_node = from_node->children.head_node;
-    while (current_node != NULL && match_count < matches_length) {
-        match_count += _get_descendant_words(
-            current_node, matches+match_count, matches_length-match_count);
+    while (current_node != NULL && word_count < words_length) {
+        word_count += _get_descendant_words(
+            current_node, words+word_count, words_length-word_count);
         current_node = current_node->next;
     }
 
-    return match_count;
+    return word_count;
 }
 
-trie_error_t trie_get_prefix_matches(trie_t* trie, const char* prefix,
-    const char** matches, size_t matches_length, size_t* match_count) {
+trie_error_t trie_get_words_matching_prefix(trie_t* trie, const char* prefix,
+    const char** words, size_t words_length, size_t* word_count) {
 
     _trie_node_list_t* current_node_list = &(trie->roots);
     _trie_node_t* node_with_char = NULL;
 
-    // Walk the trie a prefix char at a time
-    // If the whole of the prefix is not found
-    //   set match_count to zero and return
     for (size_t i = 0U; i < strlen(prefix); i++) {
         node_with_char = _get_node_with_char(current_node_list, prefix[i]);
         if (node_with_char == NULL) {
-            *match_count = 0U;
+            *word_count = 0U;
             return TRIE_SUCCESS;
         }
 
         current_node_list = &(node_with_char->children);
     }
 
-    // Otherwise
-    //   walk all descendant nodes depth first and capture all
-    //   words up to matches_length and return
-    *match_count = _get_descendant_words(
-        node_with_char, matches, matches_length);
+    *word_count = _get_descendant_words(node_with_char, words, words_length);
 
     return TRIE_SUCCESS;
 }
