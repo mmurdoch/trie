@@ -21,7 +21,7 @@ struct trie_t {
     _trie_node_list_t roots;
 };
 
-trie_error_t trie_create(trie_t** trie) {
+trie_result_t trie_create(trie_t** trie) {
     trie_t* created = malloc(sizeof(trie_t));
     if (created == NULL) {
         return TRIE_FAIL;
@@ -77,7 +77,7 @@ void _insert_node(_trie_node_list_t* node_list, _trie_node_t* node) {
     }
 }
 
-trie_error_t trie_add_word(trie_t* trie, const char* word) {
+trie_result_t trie_add_word(trie_t* trie, const char* word) {
     _trie_node_list_t* current_node_list = &(trie->roots);
 
     for (size_t i = 0U; i < strlen(word); i++) {
@@ -103,7 +103,7 @@ trie_error_t trie_add_word(trie_t* trie, const char* word) {
     return TRIE_SUCCESS;
 }
 
-trie_error_t trie_contains_word(trie_t* trie, const char* word,
+trie_result_t trie_contains_word(trie_t* trie, const char* word,
     bool* contains) {
     *contains = true;
     _trie_node_list_t* current_node_list = &(trie->roots);
@@ -147,7 +147,7 @@ size_t _get_descendant_words(_trie_node_t* from_node,
     return word_count;
 }
 
-trie_error_t trie_get_words_matching_prefix(trie_t* trie, const char* prefix,
+trie_result_t trie_get_words_matching_prefix(trie_t* trie, const char* prefix,
     const char** words, size_t words_length, size_t* word_count) {
 
     _trie_node_list_t* current_node_list = &(trie->roots);
@@ -168,7 +168,7 @@ trie_error_t trie_get_words_matching_prefix(trie_t* trie, const char* prefix,
     return TRIE_SUCCESS;
 }
 
-trie_error_t trie_destroy(trie_t* trie) {
+trie_result_t trie_destroy(trie_t* trie) {
     free(trie);
     return TRIE_SUCCESS;
 }
