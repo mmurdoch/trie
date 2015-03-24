@@ -1,4 +1,4 @@
-#include "CuTest.h"
+#include "cutest/CuTest.h"
 #include "trie.h"
 
 trie_t* trie_create_checked(CuTest* test) {

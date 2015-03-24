@@ -3,8 +3,8 @@
 # Auto generate single AllTests file for CuTest.
 # Searches through all *.c files in the current directory.
 # Prints to stdout.
-# Author: Asim Jalis
-# Date: 01/08/2003
+# Author: Asim Jalis, Matthew Murdoch
+# Date: 24/03/2015
 
 if test $# -eq 0 ; then FILES=*.c ; else FILES=$* ; fi
 
@@ -14,7 +14,7 @@ echo '
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "CuTest.h"
+#include "cutest/CuTest.h"
 '
 
 cat $FILES | grep '^void test_' |
