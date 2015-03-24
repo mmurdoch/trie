@@ -114,3 +114,41 @@ void test_contains_matches_prefix_words(CuTest* test) {
 
     trie_destroy_checked(test, trie);
 }
+
+void test_get_no_prefix_matches(CuTest* test) {
+    trie_t* trie = trie_create_checked(test);
+
+    size_t matches_length = 1U;
+    const char* matches[matches_length];
+    size_t match_count;
+    if (trie_get_prefix_matches(
+        trie, "a", matches, matches_length, &match_count) != TRIE_SUCCESS) {
+        CuFail(test, "trie_get_prefix_matches failed");
+    }
+
+    CuAssertIntEquals(test, 0U, match_count);
+
+    trie_destroy_checked(test, trie);
+}
+
+void test_get_prefix_matches(CuTest* test) {
+    trie_t* trie = trie_create_checked(test);
+
+    trie_add_key_checked(test, trie, "aardvark");
+    trie_add_key_checked(test, trie, "wolf");
+    trie_add_key_checked(test, trie, "aardwolf");
+
+    size_t matches_length = 2U;
+    const char* matches[matches_length];
+    size_t match_count;
+    if (trie_get_prefix_matches(
+        trie, "aard", matches, matches_length, &match_count) != TRIE_SUCCESS) {
+        CuFail(test, "trie_get_prefix_matches failed");
+    }
+
+    CuAssertIntEquals(test, 2U, match_count);
+    CuAssertStrEquals(test, "aardvark", matches[0]);
+    CuAssertStrEquals(test, "aardwolf", matches[1]);
+
+    trie_destroy_checked(test, trie);
+}

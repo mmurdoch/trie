@@ -127,6 +127,53 @@ trie_error_t trie_contains(trie_t* trie, const char* key, bool* contains) {
     return TRIE_SUCCESS;
 }
 
+size_t _get_descendant_words(_trie_node_t* from_node,
+    const char** matches, size_t matches_length) {
+    size_t match_count = 0U;
+
+    if (from_node->word != NULL) {
+        matches[match_count] = from_node->word;
+        match_count++;
+    }
+
+    _trie_node_t* current_node = from_node->children.head_node;
+    while (current_node != NULL && match_count < matches_length) {
+        match_count += _get_descendant_words(
+            current_node, matches+match_count, matches_length-match_count);
+        current_node = current_node->next;
+    }
+
+    return match_count;
+}
+
+trie_error_t trie_get_prefix_matches(trie_t* trie, const char* prefix,
+    const char** matches, size_t matches_length, size_t* match_count) {
+
+    _trie_node_list_t* current_node_list = &(trie->roots);
+    _trie_node_t* node_with_char = NULL;
+
+    // Walk the trie a prefix char at a time
+    // If the whole of the prefix is not found
+    //   set match_count to zero and return
+    for (size_t i = 0U; i < strlen(prefix); i++) {
+        node_with_char = _get_node_with_char(current_node_list, prefix[i]);
+        if (node_with_char == NULL) {
+            *match_count = 0U;
+            return TRIE_SUCCESS;
+        }
+
+        current_node_list = &(node_with_char->children);
+    }
+
+    // Otherwise
+    //   walk all descendant nodes depth first and capture all
+    //   words up to matches_length and return
+    *match_count = _get_descendant_words(
+        node_with_char, matches, matches_length);
+
+    return TRIE_SUCCESS;
+}
+
 trie_error_t trie_destroy(trie_t* trie) {
     free(trie);
     return TRIE_SUCCESS;
