@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include "cutest/CuTest.h"
 #include "trie.h"
 
@@ -155,4 +156,42 @@ void test_get_prefix_matches(CuTest* test) {
     CuAssertStrEquals(test, "aardwolf", words[1]);
 
     trie_destroy_checked(test, trie);
+}
+#include <stdio.h>
+int64_t currently_allocated_memory;
+void memory_allocated() {
+    currently_allocated_memory++;
+}
+
+void memory_deallocated() {
+    currently_allocated_memory--;
+}
+
+void set_up_memory_leak_detection() {
+    currently_allocated_memory = 0;
+    trie_set_memory_allocation_listener(memory_allocated);
+    trie_set_memory_deallocation_listener(memory_deallocated);
+}
+
+void assert_no_memory_leaks(CuTest* test) {
+    CuAssertTrue(test, currently_allocated_memory == 0);
+}
+
+void test_destroy_empty_does_not_leak_memory(CuTest* test) {
+    set_up_memory_leak_detection();
+    trie_t* trie = trie_create_checked(test);
+
+    trie_destroy_checked(test, trie);
+
+    assert_no_memory_leaks(test);
+}
+
+void test_destroy_single_word_trie_does_not_leak_memory(CuTest* test) {
+    set_up_memory_leak_detection();
+    trie_t* trie = trie_create_checked(test);
+    trie_add_word_checked(test, trie, "word");
+
+    trie_destroy_checked(test, trie);
+
+    assert_no_memory_leaks(test);
 }

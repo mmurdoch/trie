@@ -1,8 +1,8 @@
 #include "trie.h"
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
+#include <stdio.h>
 
 typedef struct _trie_node_t _trie_node_t;
 
@@ -21,8 +21,30 @@ struct trie_t {
     _trie_node_list_t roots;
 };
 
+void (*memory_allocation_listener)() = NULL;
+
+void (*memory_deallocation_listener)() = NULL;
+
+void* _allocate_memory(size_t size) {
+    void* allocated_memory = malloc(size);
+
+    if (allocated_memory != NULL && memory_allocation_listener != NULL) {
+        memory_allocation_listener();
+    }
+
+    return allocated_memory;
+}
+
+void _deallocate_memory(void* memory) {
+    free(memory);
+
+    if (memory_deallocation_listener != NULL) {
+        memory_deallocation_listener();
+    }
+}
+
 trie_result_t trie_create(trie_t** trie) {
-    trie_t* created = malloc(sizeof(trie_t));
+    trie_t* created = _allocate_memory(sizeof(trie_t));
     if (created == NULL) {
         return TRIE_FAIL;
     }
@@ -30,6 +52,7 @@ trie_result_t trie_create(trie_t** trie) {
     created->roots.head_node = NULL;
 
     *trie = created;
+
     return TRIE_SUCCESS;
 }
 
@@ -37,6 +60,7 @@ trie_result_t trie_create(trie_t** trie) {
 // exists in the node list for the given ch
 _trie_node_t* _get_node_with_char(_trie_node_list_t* node_list, char ch) {
     _trie_node_t* current_node = node_list->head_node;
+
     while (current_node != NULL) {
         if (current_node->ch == ch) {
             return current_node;
@@ -51,13 +75,14 @@ _trie_node_t* _get_node_with_char(_trie_node_list_t* node_list, char ch) {
 // Attempts to create a node containing the given character, returning it if
 // successful, or NULL if memory allocation fails
 _trie_node_t* _create_node(char ch) {
-    _trie_node_t* node = malloc(sizeof(_trie_node_t));
+    _trie_node_t* node = _allocate_memory(sizeof(_trie_node_t));
     if (node == NULL) {
         return NULL;
     }
 
     node->ch = ch;
     node->word = NULL;
+    node->children.head_node = NULL;
     node->next = NULL;
 
     return node;
@@ -168,7 +193,36 @@ trie_result_t trie_get_words_matching_prefix(trie_t* trie, const char* prefix,
     return TRIE_SUCCESS;
 }
 
+void _trie_destroy_node_list(_trie_node_list_t* node_list);
+
+void _trie_destroy_node_and_following_siblings(_trie_node_t* node) {
+    _trie_node_t* next_node = node->next;
+    if (next_node != NULL) {
+        _trie_destroy_node_and_following_siblings(next_node);
+    }
+
+    _trie_destroy_node_list(&(node->children));
+    _deallocate_memory(node);
+}
+
+void _trie_destroy_node_list(_trie_node_list_t* node_list) {
+    _trie_node_t* head_node = node_list->head_node;
+    if (head_node != NULL) {
+        _trie_destroy_node_and_following_siblings(head_node);
+    }
+}
+
 trie_result_t trie_destroy(trie_t* trie) {
-    free(trie);
+    _trie_destroy_node_list(&(trie->roots));
+    _deallocate_memory(trie);
+
     return TRIE_SUCCESS;
+}
+
+void trie_set_memory_allocation_listener(void (*listener)()) {
+    memory_allocation_listener = listener;
+}
+
+void trie_set_memory_deallocation_listener(void (*listener)()) {
+    memory_deallocation_listener = listener;
 }
