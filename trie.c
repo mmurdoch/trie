@@ -193,27 +193,27 @@ trie_result_t trie_get_words_matching_prefix(trie_t* trie, const char* prefix,
     return TRIE_SUCCESS;
 }
 
-void _trie_destroy_node_list(_trie_node_list_t* node_list);
+void _destroy_node_list(_trie_node_list_t* node_list);
 
-void _trie_destroy_node_and_following_siblings(_trie_node_t* node) {
+void _destroy_node_and_following_siblings(_trie_node_t* node) {
     _trie_node_t* next_node = node->next;
     if (next_node != NULL) {
-        _trie_destroy_node_and_following_siblings(next_node);
+        _destroy_node_and_following_siblings(next_node);
     }
 
-    _trie_destroy_node_list(&(node->children));
+    _destroy_node_list(&(node->children));
     _deallocate_memory(node);
 }
 
-void _trie_destroy_node_list(_trie_node_list_t* node_list) {
+void _destroy_node_list(_trie_node_list_t* node_list) {
     _trie_node_t* head_node = node_list->head_node;
     if (head_node != NULL) {
-        _trie_destroy_node_and_following_siblings(head_node);
+        _destroy_node_and_following_siblings(head_node);
     }
 }
 
 trie_result_t trie_destroy(trie_t* trie) {
-    _trie_destroy_node_list(&(trie->roots));
+    _destroy_node_list(&(trie->roots));
     _deallocate_memory(trie);
 
     return TRIE_SUCCESS;
