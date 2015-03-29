@@ -157,7 +157,7 @@ void test_get_prefix_matches(CuTest* test) {
 
     trie_destroy_checked(test, trie);
 }
-#include <stdio.h>
+
 int64_t currently_allocated_memory;
 void memory_allocated() {
     currently_allocated_memory++;
