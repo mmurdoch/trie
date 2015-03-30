@@ -70,6 +70,13 @@ void test_add_empty_string_fails(CuTest* test) {
     trie_destroy_checked(test, trie);
 }
 
+void test_contains_null_trie_fails(CuTest* test) {
+    bool contains;
+    trie_result_t contains_result = trie_contains_word(NULL, "word", &contains);
+
+    CuAssertIntEquals(test, TRIE_NULL, contains_result);
+}
+
 void test_contains_with_no_words(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
