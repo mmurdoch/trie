@@ -18,7 +18,7 @@ typedef enum {
     TRIE_NULL,
     TRIE_WORD_NULL,
     TRIE_WORD_EMPTY,
-    TRIE_FAIL
+    TRIE_MALLOC_FAIL
 } trie_result_t;
 
 /**

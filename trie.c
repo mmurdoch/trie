@@ -46,7 +46,7 @@ void _deallocate_memory(void* memory) {
 trie_result_t trie_create(trie_t** trie) {
     trie_t* created = _allocate_memory(sizeof(trie_t));
     if (created == NULL) {
-        return TRIE_FAIL;
+        return TRIE_MALLOC_FAIL;
     }
 
     created->roots.head_node = NULL;
@@ -124,7 +124,7 @@ trie_result_t trie_add_word(trie_t* trie, const char* word) {
         if (node_with_char == NULL) {
             node_with_char = _create_node(current_char);
             if (node_with_char == NULL) {
-                return TRIE_FAIL;
+                return TRIE_MALLOC_FAIL;
             }
 
             _insert_node(current_node_list, node_with_char);
