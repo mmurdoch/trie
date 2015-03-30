@@ -44,12 +44,36 @@ void assert_trie_does_not_contain_word(CuTest* test, trie_t* trie,
     CuAssertFalse(test, contains);
 }
 
-void test_contains_empty(CuTest* test) {
+void test_add_null_pointer_fails(CuTest* test) {
+    trie_t* trie = trie_create_checked(test);
+
+    trie_result_t add_result = trie_add_word(trie, NULL);
+
+    CuAssertIntEquals(test, TRIE_ADD_NULL, add_result);
+
+    trie_destroy_checked(test, trie);
+}
+
+void test_add_empty_string_fails(CuTest* test) {
+    trie_t* trie = trie_create_checked(test);
+
+    trie_result_t add_result = trie_add_word(trie, "");
+
+    CuAssertIntEquals(test, TRIE_ADD_EMPTY, add_result);
+
+    trie_destroy_checked(test, trie);
+}
+
+void test_contains_with_no_words(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
     assert_trie_does_not_contain_word(test, trie, "hello");
 
     trie_destroy_checked(test, trie);
+}
+
+void test_contains_empty_string_is_false(CuTest* test) {
+
 }
 
 void test_contains_with_single_char_word(CuTest* test) {
@@ -190,6 +214,17 @@ void test_destroy_single_word_trie_does_not_leak_memory(CuTest* test) {
     set_up_memory_leak_detection();
     trie_t* trie = trie_create_checked(test);
     trie_add_word_checked(test, trie, "word");
+
+    trie_destroy_checked(test, trie);
+
+    assert_no_memory_leaks(test);
+}
+
+void test_destroy_multi_word_trie_does_not_leak_memory(CuTest* test) {
+    set_up_memory_leak_detection();
+    trie_t* trie = trie_create_checked(test);
+    trie_add_word_checked(test, trie, "one");
+    trie_add_word_checked(test, trie, "two");
 
     trie_destroy_checked(test, trie);
 

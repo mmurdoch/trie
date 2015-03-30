@@ -15,6 +15,8 @@ typedef struct trie_t trie_t;
  */
 typedef enum {
     TRIE_SUCCESS,
+    TRIE_ADD_NULL,
+    TRIE_ADD_EMPTY,
     TRIE_FAIL
 } trie_result_t;
 
@@ -32,7 +34,8 @@ trie_result_t trie_create(trie_t** trie);
  *
  * @param trie trie to which to add the word
  * @param word word to add
- * @return whether or not the addition was successful
+ * @return TRIE_SUCCESS if the addition was successful, TRIE_ADD_NULL if
+ *         word was NULL or TRIE_ADD_EMPTY if word was an empty string
  */
 trie_result_t trie_add_word(trie_t* trie, const char* word);
 
