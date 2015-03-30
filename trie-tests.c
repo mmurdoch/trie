@@ -44,12 +44,18 @@ void assert_trie_does_not_contain_word(CuTest* test, trie_t* trie,
     CuAssertFalse(test, contains);
 }
 
+void test_add_null_trie_fails(CuTest* test) {
+    trie_result_t add_result = trie_add_word(NULL, "word");
+
+    CuAssertIntEquals(test, TRIE_NULL, add_result);
+}
+
 void test_add_null_pointer_fails(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
     trie_result_t add_result = trie_add_word(trie, NULL);
 
-    CuAssertIntEquals(test, TRIE_ADD_NULL, add_result);
+    CuAssertIntEquals(test, TRIE_WORD_NULL, add_result);
 
     trie_destroy_checked(test, trie);
 }
@@ -59,7 +65,7 @@ void test_add_empty_string_fails(CuTest* test) {
 
     trie_result_t add_result = trie_add_word(trie, "");
 
-    CuAssertIntEquals(test, TRIE_ADD_EMPTY, add_result);
+    CuAssertIntEquals(test, TRIE_WORD_EMPTY, add_result);
 
     trie_destroy_checked(test, trie);
 }

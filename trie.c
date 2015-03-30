@@ -103,12 +103,16 @@ void _insert_node(_trie_node_list_t* node_list, _trie_node_t* node) {
 }
 
 trie_result_t trie_add_word(trie_t* trie, const char* word) {
+    if (trie == NULL) {
+        return TRIE_NULL;
+    }
+
     if (word == NULL) {
-        return TRIE_ADD_NULL;
+        return TRIE_WORD_NULL;
     }
 
     if (strlen(word) == 0U) {
-        return TRIE_ADD_EMPTY;
+        return TRIE_WORD_EMPTY;
     }
 
     _trie_node_list_t* current_node_list = &(trie->roots);

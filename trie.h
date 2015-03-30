@@ -15,8 +15,9 @@ typedef struct trie_t trie_t;
  */
 typedef enum {
     TRIE_SUCCESS,
-    TRIE_ADD_NULL,
-    TRIE_ADD_EMPTY,
+    TRIE_NULL,
+    TRIE_WORD_NULL,
+    TRIE_WORD_EMPTY,
     TRIE_FAIL
 } trie_result_t;
 
@@ -44,8 +45,9 @@ trie_result_t trie_add_word(trie_t* trie, const char* word);
  *
  * @param trie trie to check
  * @param word word for which to search
- * @param contains (out) set to true if the word was found, false otherwise
- * @return whether or not the search was successfull
+ * @param contains (out) set to true if the word was found, false otherwise.
+ *        Always false if word is an empty string
+ * @return whether or not the search was successful
  */
 trie_result_t trie_contains_word(trie_t* trie, const char* word, bool* contains);
 
