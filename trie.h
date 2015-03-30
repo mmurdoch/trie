@@ -35,8 +35,9 @@ trie_result_t trie_create(trie_t** trie);
  *
  * @param trie trie to which to add the word
  * @param word word to add
- * @return TRIE_SUCCESS if the addition was successful, TRIE_ADD_NULL if
- *         word was NULL or TRIE_ADD_EMPTY if word was an empty string
+ * @return TRIE_SUCCESS if the addition was successful, TRIE_NULL if trie
+ *         is NULL, TRIE_WORD_NULL if word is NULL or TRIE_WORD_EMPTY if word
+ *         is an empty string
  */
 trie_result_t trie_add_word(trie_t* trie, const char* word);
 
@@ -47,7 +48,8 @@ trie_result_t trie_add_word(trie_t* trie, const char* word);
  * @param word word for which to search
  * @param contains (out) set to true if the word was found, false otherwise.
  *        Always false if word is an empty string
- * @return whether or not the search was successful
+ * @return TRIE_SUCCESS if the search was successful, TRIE_NULL if trie is NULL
+ *         or TRIE_WORD_NULL if word is NULL
  */
 trie_result_t trie_contains_word(trie_t* trie, const char* word, bool* contains);
 

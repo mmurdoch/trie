@@ -146,6 +146,10 @@ trie_result_t trie_contains_word(trie_t* trie, const char* word,
         return TRIE_NULL;
     }
 
+    if (word == NULL) {
+        return TRIE_WORD_NULL;
+    }
+
     if (strlen(word) == 0U) {
         *contains = false;
         return TRIE_SUCCESS;
