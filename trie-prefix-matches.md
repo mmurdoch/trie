@@ -1,8 +1,6 @@
 What should happen when passing empty string to 'add', 'contains' and
 'prefix_matches'?
 
-Return TRIE_MALLOC_FAIL if memory allocation fails
-
 Do we need to copy the words passed to add_word()? We probably should since we
 don't know how the words have been created. For example if a user was adding a
 previously unknown word, dynamically allocated memory would likely have been

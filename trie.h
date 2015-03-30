@@ -26,7 +26,8 @@ typedef enum {
  * function must be matched by a call to trie_destroy().
  *
  * @param trie (out) set to the created trie
- * @return whether or not the creation was successful
+ * @return TRIE_SUCCESS if the creation was successful or TRIE_MALLOC_FAIL if
+ *         the memory allocation failed
  */
 trie_result_t trie_create(trie_t** trie);
 
@@ -36,8 +37,8 @@ trie_result_t trie_create(trie_t** trie);
  * @param trie trie to which to add the word
  * @param word word to add
  * @return TRIE_SUCCESS if the addition was successful, TRIE_NULL if trie
- *         is NULL, TRIE_WORD_NULL if word is NULL or TRIE_WORD_EMPTY if word
- *         is an empty string
+ *         is NULL, TRIE_WORD_NULL if word is NULL, TRIE_WORD_EMPTY if word
+ *         is an empty string or TRIE_MALLOC_FAIL if memory allocation failed
  */
 trie_result_t trie_add_word(trie_t* trie, const char* word);
 
