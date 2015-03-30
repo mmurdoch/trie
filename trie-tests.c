@@ -73,7 +73,11 @@ void test_contains_with_no_words(CuTest* test) {
 }
 
 void test_contains_empty_string_is_false(CuTest* test) {
+    trie_t* trie = trie_create_checked(test);
 
+    assert_trie_does_not_contain_word(test, trie, "");
+
+    trie_destroy_checked(test, trie);
 }
 
 void test_contains_with_single_char_word(CuTest* test) {

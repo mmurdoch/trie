@@ -138,6 +138,11 @@ trie_result_t trie_add_word(trie_t* trie, const char* word) {
 
 trie_result_t trie_contains_word(trie_t* trie, const char* word,
     bool* contains) {
+    if (strlen(word) == 0U) {
+        *contains = false;
+        return TRIE_SUCCESS;
+    }
+
     *contains = true;
     _trie_node_list_t* current_node_list = &(trie->roots);
 
