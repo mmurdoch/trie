@@ -142,6 +142,7 @@ trie_result_t trie_add_word(trie_t* trie, const char* word) {
 
 trie_result_t trie_contains_word(trie_t* trie, const char* word,
     bool* contains) {
+
     if (trie == NULL) {
         return TRIE_NULL;
     }
@@ -180,6 +181,7 @@ trie_result_t trie_contains_word(trie_t* trie, const char* word,
 
 size_t _get_descendant_words(_trie_node_t* from_node,
     const char** words, size_t words_length) {
+
     size_t word_count = 0U;
 
     if (from_node->word != NULL) {
@@ -199,6 +201,10 @@ size_t _get_descendant_words(_trie_node_t* from_node,
 
 trie_result_t trie_get_words_matching_prefix(trie_t* trie, const char* prefix,
     const char** words, size_t words_length, size_t* word_count) {
+
+    if (trie == NULL) {
+        return TRIE_NULL;
+    }
 
     _trie_node_list_t* current_node_list = &(trie->roots);
     _trie_node_t* node_with_char = NULL;

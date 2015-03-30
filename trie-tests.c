@@ -172,6 +172,20 @@ void test_contains_matches_prefix_words(CuTest* test) {
     trie_destroy_checked(test, trie);
 }
 
+void test_prefix_matches_null_trie_fails(CuTest* test) {
+    trie_t* trie = trie_create_checked(test);
+
+    const char** matches;
+    size_t match_count;
+    trie_result_t match_result =
+        trie_get_words_matching_prefix(NULL, "a", matches, 0U, &match_count);
+
+    CuAssertIntEquals(test, TRIE_NULL, match_result);
+
+
+    trie_destroy_checked(test, trie);
+}
+
 void test_get_no_prefix_matches(CuTest* test) {
     trie_t* trie = trie_create_checked(test);
 
