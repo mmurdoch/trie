@@ -18,6 +18,9 @@ typedef enum {
     TRIE_NULL,
     TRIE_WORD_NULL,
     TRIE_WORD_EMPTY,
+    TRIE_PREFIX_NULL,
+    TRIE_PREFIX_EMPTY,
+    TRIE_WORDS_LENGTH_ZERO,
     TRIE_MALLOC_FAIL
 } trie_result_t;
 
@@ -65,7 +68,9 @@ trie_result_t trie_contains_word(trie_t* trie, const char* word, bool* contains)
  * @param words_length the length of the words array
  * @param word_count (out) set to the number of words retrieved. This will
  *        never be greater than words_length
- * @return whether or not the retrieval was successful
+ * @return TRIE_SUCCESS if the search was successful, TRIE_NULL if trie is NULL,
+ *         TRIE_PREFIX_NULL if prefix is NULL, TRIE_PREFIX_EMPTY if prefix is an
+ *         empty string or TRIE_WORDS_LENGTH_ZERO if words_length is zero
  */
 trie_result_t trie_get_words_matching_prefix(trie_t* trie, const char* prefix,
     const char** words, size_t words_length, size_t* word_count);

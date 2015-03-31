@@ -206,6 +206,18 @@ trie_result_t trie_get_words_matching_prefix(trie_t* trie, const char* prefix,
         return TRIE_NULL;
     }
 
+    if (prefix == NULL) {
+        return TRIE_PREFIX_NULL;
+    }
+
+    if (strlen(prefix) == 0U) {
+        return TRIE_PREFIX_EMPTY;
+    }
+
+    if (words_length == 0U) {
+        return TRIE_WORDS_LENGTH_ZERO;
+    }
+
     _trie_node_list_t* current_node_list = &(trie->roots);
     _trie_node_t* node_with_char = NULL;
 

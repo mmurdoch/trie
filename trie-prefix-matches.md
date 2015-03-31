@@ -1,8 +1,3 @@
-trie_get_words_matching_prefix tests:
-* prefix == NULL
-* strlen(prefix) == 0
-* words_length == 0
-
 Do we need to copy the words passed to add_word()? We probably should since we
 don't know how the words have been created. For example if a user was adding a
 previously unknown word, dynamically allocated memory would likely have been
