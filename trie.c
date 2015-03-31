@@ -12,7 +12,7 @@ typedef struct {
 
 struct _trie_node_t {
     char ch;
-    const char* word;
+    char* word;
     _trie_node_list_t children;
     _trie_node_t* next;
 };
@@ -131,7 +131,12 @@ trie_result_t trie_add_word(trie_t* trie, const char* word) {
         }
 
         if (i == strlen(word)-1) {
-            node_with_char->word = word;
+            char* allocated_word = _allocate_memory(strlen(word)+1);
+            if (allocated_word == NULL) {
+                return TRIE_MALLOC_FAIL;
+            }
+            strcpy(allocated_word, word);
+            node_with_char->word = allocated_word;
         }
 
         current_node_list = &(node_with_char->children);
@@ -244,6 +249,9 @@ void _destroy_node_and_following_siblings(_trie_node_t* node) {
         _destroy_node_and_following_siblings(next_node);
     }
 
+    if (node->word != NULL) {
+        _deallocate_memory(node->word);
+    }
     _destroy_node_list(&(node->children));
     _deallocate_memory(node);
 }

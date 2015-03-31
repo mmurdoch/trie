@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <string.h>
 #include "cutest/CuTest.h"
 #include "trie.h"
 
@@ -274,7 +275,7 @@ void set_up_memory_leak_detection() {
 }
 
 void assert_no_memory_leaks(CuTest* test) {
-    CuAssertTrue(test, currently_allocated_memory == 0);
+    CuAssertIntEquals(test, 0, currently_allocated_memory);
 }
 
 void test_destroy_empty_does_not_leak_memory(CuTest* test) {
