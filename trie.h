@@ -83,8 +83,20 @@ trie_result_t trie_get_words_matching_prefix(trie_t* trie, const char* prefix,
  */
 trie_result_t trie_destroy(trie_t* trie);
 
+/**
+ * Sets a listener function which will be called every time a dynamic memory
+ * allocation occurs.
+ *
+ * @param listener allocation listener function to set
+ */
 void trie_set_memory_allocation_listener(void (*listener)());
 
+/**
+ * Sets a listener function which will be called every time a dynamic memory
+ * deallocation occurs.
+ *
+ * @param listener deallocation listener function to set
+ */
 void trie_set_memory_deallocation_listener(void (*listener)());
 
 #endif /* TRIE_H */
